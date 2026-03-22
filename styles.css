@@ -152,6 +152,19 @@ h1 {
   transform: translateY(1px);
 }
 
+.buy-btn:disabled {
+  background: #b7b2ac;
+  color: #f5f2ed;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
+.payment-status {
+  font-size: 0.86rem;
+  color: #786653;
+}
+
 .info-card {
   margin: 1rem 0 3rem;
   border: 1px dashed #ba987a;

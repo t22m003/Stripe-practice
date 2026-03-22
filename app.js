@@ -19,6 +19,22 @@ const PRODUCTS = [
   },
 ];
 
+function isStripePaymentLink(url) {
+  return /^https:\/\/buy\.stripe\.com\/[A-Za-z0-9_]+$/.test(url);
+}
+
+function isLikelyLiveLink(url) {
+  return isStripePaymentLink(url) && !url.includes("/test_");
+}
+
+function isTestLink(url) {
+  return isStripePaymentLink(url) && url.includes("/test_");
+}
+
+function isLocalHost() {
+  return ["localhost", "127.0.0.1"].includes(window.location.hostname);
+}
+
 function createProductCard(product) {
   const card = document.createElement("article");
   card.className = "product-card";
@@ -36,12 +52,32 @@ function createProductCard(product) {
   const button = document.createElement("button");
   button.className = "buy-btn";
   button.type = "button";
-  button.textContent = "購入する";
-  button.addEventListener("click", () => {
-    window.location.href = product.paymentLink;
-  });
+  button.textContent = "Stripeで購入する";
 
-  card.append(title, desc, price, button);
+  const status = document.createElement("p");
+  status.className = "payment-status";
+
+  if (!isStripePaymentLink(product.paymentLink)) {
+    button.disabled = true;
+    button.textContent = "リンク未設定";
+    status.textContent = "決済リンク形式が不正です。";
+  } else if (isTestLink(product.paymentLink) && isLocalHost()) {
+    status.textContent = "テスト決済リンク (ローカル検証用)";
+    button.addEventListener("click", () => {
+      window.location.href = product.paymentLink;
+    });
+  } else if (!isLikelyLiveLink(product.paymentLink)) {
+    button.disabled = true;
+    button.textContent = "本番リンク未設定";
+    status.textContent = "Live mode の Payment Link を設定してください。";
+  } else {
+    status.textContent = "本番決済リンク設定済み";
+    button.addEventListener("click", () => {
+      window.location.href = product.paymentLink;
+    });
+  }
+
+  card.append(title, desc, price, button, status);
   return card;
 }
 

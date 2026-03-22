@@ -44,6 +44,11 @@
 paymentLink: "https://buy.stripe.com/xxxxxxxxxxxxxxxxxx"
 ```
 
+補足:
+- この実装は `https://buy.stripe.com/...` 形式かつ `test_` を含まないリンクのみ購入ボタンが有効になります。
+- `test_` リンクまたは形式不正の場合、購入ボタンは無効化されます。
+- ただし `localhost` でのローカル確認時のみ、`test_` リンクでも購入ボタンが有効になります。
+
 ## 6. GitHub Pages 公開
 
 1. `main` へ push
